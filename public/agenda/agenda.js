@@ -197,7 +197,7 @@ function desenharCalendario() {
       titulo = `${info.vagas} horário${info.vagas > 1 ? "s" : ""} livre${info.vagas > 1 ? "s" : ""}`;
     }
 
-    celulas += `<button type="button" class="${classe}" data-dia="${iso}" ${desabilitado}
+    celulas += `<button type="button" class="${classe}" data-dia="${iso}" data-hoje="${iso === hoje}" ${desabilitado}
       aria-pressed="${selecionado}" title="${titulo}">${d}</button>`;
   }
 

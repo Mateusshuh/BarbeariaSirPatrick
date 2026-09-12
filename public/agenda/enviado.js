@@ -8,7 +8,7 @@
 
 import { supabase, mensagemDeErro } from "/shared/supabase.js";
 import { exigirSessao, sair, tratarSessaoMorta } from "/shared/sessao.js";
-import { $, escapar, montarTopo, quandoPorExtenso, dinheiro } from "/shared/ui.js";
+import { $, escapar, montarTopo, quandoPorExtenso, dinheiro, instanteDoTexto } from "/shared/ui.js";
 
 const { perfil } = await exigirSessao();
 montarTopo($("#topo"), perfil);
@@ -43,7 +43,7 @@ if (!id) {
 function inicioDe(periodo) {
   // O PostgREST devolve o range como texto: ["2026-09-12 14:30:00-03","...")
   const bruto = String(periodo).replace(/^[\[(]/, "").split(",")[0].replace(/"/g, "").trim();
-  return new Date(bruto.replace(" ", "T"));
+  return instanteDoTexto(bruto);
 }
 
 function desenhar(pedido, cfg) {

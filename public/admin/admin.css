@@ -2,6 +2,7 @@
    Painel do Patrick
    Pensado para o celular primeiro: é de lá que ele vai olhar,
    entre um corte e outro, com uma mão só.
+   Depende de shared/tokens.css e shared/escuro.css.
    ========================================================= */
 
 .corpo-admin { padding: 22px 0 0; }
@@ -14,8 +15,8 @@
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
-  margin-bottom: 14px;
-  padding-bottom: 10px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
   border-bottom: 1px solid var(--line);
 }
 
@@ -26,18 +27,16 @@
   font-weight: 600;
   letter-spacing: .1em;
   text-transform: uppercase;
-  color: var(--muted-claro);
+  color: var(--texto-fraco);
 }
 
-/* ===== Fila de pedidos =====
-   Se confirmar der mais trabalho que responder um WhatsApp, ele abandona o
-   painel e volta para o caderno. O botão Confirmar é grande, é o primeiro do
-   cartão e não abre tela nenhuma. */
+/* ===== Fila de pedidos ===== */
 .fila-item {
   border: 1px solid var(--line);
   border-left: 3px solid var(--warn);
-  background: #fff;
-  padding: 16px 18px;
+  background: var(--superficie);
+  border-radius: var(--raio-g);
+  padding: 18px 20px;
 }
 
 .fila-item + .fila-item { margin-top: 10px; }
@@ -45,43 +44,42 @@
 .fila-nome {
   font-family: "Playfair Display", Georgia, serif;
   font-size: 20px;
+  color: var(--branco);
   margin-bottom: 2px;
 }
 
-.fila-quando { font-size: 15px; font-weight: 600; }
+.fila-quando { font-size: 15px; font-weight: 600; color: var(--gold); }
 
 .fila-meta {
   font-size: 12.5px;
-  color: var(--muted-claro);
-  margin-top: 4px;
+  color: var(--texto-fraco);
+  margin-top: 6px;
   display: flex;
   flex-wrap: wrap;
   gap: 4px 14px;
 }
 
-/* Quanto falta para o prazo vencer. Vermelho quando falta menos de uma hora:
-   passou disso, o sistema decide sozinho. */
 .prazo-curto { color: var(--bad); font-weight: 600; }
 
 .fila-acoes {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 14px;
+  margin-top: 16px;
 }
 
 .fila-acoes .btn { flex: 1 1 auto; min-width: 116px; }
 
-/* Fila vazia é a única métrica que importa para ele. */
 .fila-vazia {
   border: 1px solid var(--line);
-  background: #fff;
-  padding: 28px 20px;
+  background: var(--superficie);
+  border-radius: var(--raio-g);
+  padding: 34px 20px;
   text-align: center;
 }
 
 .fila-vazia h3 { font-size: 22px; margin-bottom: 6px; }
-.fila-vazia p { color: var(--muted-claro); margin: 0; }
+.fila-vazia p { color: var(--texto-fraco); margin: 0; }
 
 /* ===== Agenda do dia ===== */
 .dia-controles {
@@ -94,55 +92,67 @@
 
 .dia-controles input[type="date"] { width: auto; }
 
-.linha-tempo { border-top: 1px solid var(--line); }
+.linha-tempo {
+  border: 1px solid var(--line);
+  border-radius: var(--raio-g);
+  background: var(--superficie);
+  overflow: hidden;
+}
 
 .bloco {
   display: flex;
   gap: 14px;
   align-items: flex-start;
-  padding: 14px 4px;
+  padding: 14px 18px;
   border-bottom: 1px solid var(--line);
+  border-left: 3px solid transparent;
 }
+
+.bloco:last-child { border-bottom: 0; }
 
 .bloco-hora {
   font-family: "Playfair Display", Georgia, serif;
   font-size: 18px;
+  color: var(--branco);
   min-width: 62px;
   padding-top: 1px;
 }
 
 .bloco-corpo { flex: 1; min-width: 0; }
 
-.bloco-nome { font-weight: 600; }
+.bloco-nome { font-weight: 600; color: var(--texto); }
 
 .bloco-meta {
   font-size: 12.5px;
-  color: var(--muted-claro);
+  color: var(--texto-fraco);
   display: flex;
   flex-wrap: wrap;
   gap: 4px 12px;
-  margin-top: 2px;
+  margin-top: 3px;
 }
 
-.bloco-acoes { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.bloco-acoes { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
 
-.bloco-acoes .btn { padding: 9px 13px; font-size: 12px; }
+.bloco-acoes .btn { padding: 9px 15px; font-size: 12px; }
 
-/* Pendente e confirmado precisam ser distinguíveis de relance, sem leitura. */
-.bloco[data-status="pendente"] { border-left: 3px solid var(--warn); padding-left: 12px; }
-.bloco[data-status="confirmado"] { border-left: 3px solid var(--ok); padding-left: 12px; }
-.bloco[data-status="concluido"] { opacity: .55; }
-.bloco[data-status="cancelado"], .bloco[data-status="recusado"],
-.bloco[data-status="nao_compareceu"] { opacity: .55; }
+.bloco[data-status="pendente"] { border-left-color: var(--warn); }
+.bloco[data-status="confirmado"] { border-left-color: var(--ok); }
+.bloco[data-status="concluido"] { opacity: .5; }
+.bloco[data-status="cancelado"],
+.bloco[data-status="recusado"],
+.bloco[data-status="nao_compareceu"] { opacity: .5; }
 .bloco[data-status="cancelado"] .bloco-hora,
 .bloco[data-status="recusado"] .bloco-hora,
 .bloco[data-status="nao_compareceu"] .bloco-hora { text-decoration: line-through; }
 
 .bloco-bloqueio {
   background: repeating-linear-gradient(
-    45deg, var(--cream-2), var(--cream-2) 6px, transparent 6px, transparent 12px);
-  border-left: 3px solid var(--muted);
-  padding-left: 12px;
+    45deg,
+    rgba(255, 255, 255, .04),
+    rgba(255, 255, 255, .04) 6px,
+    transparent 6px,
+    transparent 12px);
+  border-left-color: var(--texto-fraco);
 }
 
 /* ===== Barra de ações rápidas ===== */
@@ -153,23 +163,29 @@
   margin-bottom: 26px;
 }
 
-/* ===== Diálogos =====
-   <dialog> nativo: o navegador cuida do foco preso e do Esc, e é menos código
-   do que fazer isso à mão — e melhor feito. */
+/* ===== Diálogos ===== */
 dialog {
-  border: 1px solid var(--ink);
-  background: var(--cream);
-  color: var(--ink);
+  border: 1px solid var(--line-forte);
+  background: var(--superficie);
+  color: var(--texto);
+  border-radius: var(--raio-g);
   padding: 0;
   width: min(440px, calc(100vw - 32px));
   max-height: calc(100vh - 40px);
 }
 
-dialog::backdrop { background: rgba(20, 18, 16, .55); }
+dialog::backdrop { background: rgba(0, 0, 0, .68); }
 
-.dialogo-corpo { padding: 22px 22px 24px; }
+.dialogo-corpo { padding: 24px 24px 26px; }
 .dialogo-corpo h2 { font-size: 20px; margin-bottom: 14px; }
-.dialogo-acoes { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; flex-wrap: wrap; }
+
+.dialogo-acoes {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
 
 .par-campos { display: flex; gap: 10px; }
 .par-campos .campo { flex: 1; }
@@ -182,14 +198,19 @@ dialog::backdrop { background: rgba(20, 18, 16, .55); }
   font-size: 11px;
   letter-spacing: .1em;
   text-transform: uppercase;
-  color: var(--muted-claro);
+  color: var(--texto-fraco);
   font-weight: 600;
-  padding: 0 10px 8px 0;
+  padding: 0 10px 10px 0;
 }
 
-.tabela-config td { padding: 7px 10px 7px 0; border-top: 1px solid var(--line); vertical-align: middle; }
+.tabela-config td {
+  padding: 8px 10px 8px 0;
+  border-top: 1px solid var(--line);
+  vertical-align: middle;
+}
+
 .tabela-config input[type="time"], .tabela-config input[type="number"] { padding: 8px 9px; }
-.tabela-config input[type="checkbox"] { width: auto; }
+.tabela-config input[type="checkbox"] { width: auto; accent-color: var(--gold); }
 
 .rolagem-lateral { overflow-x: auto; }
 
@@ -199,11 +220,12 @@ dialog::backdrop { background: rgba(20, 18, 16, .55); }
   align-items: flex-end;
   flex-wrap: wrap;
   border: 1px solid var(--line);
-  background: #fff;
-  padding: 14px 16px;
+  background: var(--superficie);
+  border-radius: var(--raio-g);
+  padding: 16px 18px;
 }
 
-.item-servico + .item-servico { margin-top: -1px; }
+.item-servico + .item-servico { margin-top: 10px; }
 .item-servico .campo { margin-bottom: 0; }
 .item-servico .campo-nome { flex: 2 1 160px; }
 .item-servico .campo-curto { flex: 0 1 110px; }

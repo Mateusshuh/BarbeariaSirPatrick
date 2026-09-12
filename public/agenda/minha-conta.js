@@ -11,7 +11,7 @@ import { api, mensagemDaApi, acordarApi, avisarDemora } from "/shared/api.js";
 import { exigirSessao, sair, tratarSessaoMorta } from "/shared/sessao.js";
 import {
   $, escapar, aviso, limparAviso, ocupado, montarTopo,
-  quandoPorExtenso, quandoCurto, selo, dinheiro, intervaloHumano
+  quandoPorExtenso, quandoCurto, selo, dinheiro, intervaloHumano, instanteDoTexto
 } from "/shared/ui.js";
 
 const { perfil } = await exigirSessao();
@@ -72,7 +72,7 @@ function secao(secaoSel, listaSel, itens) {
 
 function inicioDe(periodo) {
   const bruto = String(periodo).replace(/^[\[(]/, "").split(",")[0].replace(/"/g, "").trim();
-  return new Date(bruto.replace(" ", "T")).getTime();
+  return instanteDoTexto(bruto).getTime();
 }
 
 // -----------------------------------------------------------------------------

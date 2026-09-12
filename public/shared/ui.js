@@ -188,13 +188,19 @@ export function instanteLocal(diaISO, hhmm) {
 }
 
 /** Lê o início de um tstzrange como o PostgREST devolve: ["2026-09-12 14:30:00-03",...) */
+export function instanteDoTexto(bruto) {
+  const t = bruto.replace(" ", "T");
+  const comFuso = /[+-][0-9][0-9]$/.test(t) ? t + ":00" : t;
+  return new Date(comFuso);
+}
+
 export function inicioDoPeriodo(periodo) {
   const bruto = String(periodo).replace(/^[\[(]/, "").split(",")[0].replace(/"/g, "").trim();
-  return new Date(bruto.replace(" ", "T"));
+  return instanteDoTexto(bruto);
 }
 
 /** Idem, para o fim. */
 export function fimDoPeriodo(periodo) {
   const bruto = String(periodo).replace(/[\])]$/, "").split(",")[1].replace(/"/g, "").trim();
-  return new Date(bruto.replace(" ", "T"));
+  return instanteDoTexto(bruto);
 }

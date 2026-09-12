@@ -1,0 +1,105 @@
+/* =========================================================
+   Tema escuro — preto, branco e dourado
+   Carrega depois de tokens.css e antes do CSS da tela.
+   Vale para a agenda e para o painel; o site institucional
+   não carrega este arquivo.
+   ========================================================= */
+
+/* ===== Paleta ===== */
+:root {
+  color-scheme: dark;
+
+  --preto: #0A0A0B;
+  --superficie: #121214;
+  --superficie-2: #1A1A1D;
+  --superficie-3: #232327;
+
+  --branco: #FFFFFF;
+  --texto: #EDEBE8;
+  --texto-fraco: #9A958D;
+
+  --ink: #121214;
+  --ink-2: #0A0A0B;
+  --cream: #EDEBE8;
+  --cream-2: #1A1A1D;
+  --cream-70: rgba(237, 235, 232, .70);
+  --muted: #9A958D;
+  --muted-claro: #9A958D;
+  --line: rgba(255, 255, 255, .10);
+  --line-forte: rgba(255, 255, 255, .24);
+  --line-dark: rgba(255, 255, 255, .10);
+
+  --gold: #C9A961;
+  --gold-soft: #E3C88E;
+
+  --warn: #E2A93B;
+  --ok: #5BB98B;
+  --bad: #E4695A;
+  --warn-fundo: rgba(226, 169, 59, .10);
+  --ok-fundo: rgba(91, 185, 139, .10);
+  --bad-fundo: rgba(228, 105, 90, .10);
+
+  --raio: 10px;
+  --raio-g: 14px;
+}
+
+/* ===== Base ===== */
+body {
+  background: var(--preto);
+  color: var(--texto);
+}
+
+h1, h2, h3 { color: var(--branco); }
+
+.texto-apoio, .eyebrow { color: var(--texto-fraco); }
+
+.rodape { border-top-color: var(--line); color: var(--texto-fraco); }
+.rodape a { border-bottom-color: var(--line-forte); }
+.rodape a:hover { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* ===== Cabeçalho ===== */
+.topo { background: var(--superficie); border-bottom-color: var(--line); }
+
+/* ===== Formulários ===== */
+input, select, textarea {
+  background: var(--superficie-2);
+  color: var(--texto);
+  border-color: var(--line-forte);
+  border-radius: var(--raio);
+}
+
+input::placeholder, textarea::placeholder { color: #6F6A63; }
+
+input[type="date"], input[type="time"] { color-scheme: dark; }
+
+/* ===== Botões ===== */
+.btn { border-radius: 999px; }
+
+.btn-linha { background: transparent; color: var(--texto); border-color: var(--line-forte); }
+.btn-linha:hover:not(:disabled) { border-color: var(--branco); background: rgba(255, 255, 255, .06); }
+
+.btn-dark { background: var(--superficie-3); color: var(--texto); }
+.btn-dark:hover:not(:disabled) { background: var(--superficie-2); }
+
+/* ===== Avisos ===== */
+.aviso { border-radius: var(--raio); background: var(--superficie-2); }
+.aviso-erro { color: #F0B4AA; }
+.aviso-ok { color: #A6DCC2; }
+.aviso-atencao { color: #EFD199; }
+
+/* ===== Cartões e selos ===== */
+.cartao { background: var(--superficie); border-color: var(--line); border-radius: var(--raio); }
+.cartao + .cartao { margin-top: 10px; }
+
+.selo { border-radius: 999px; }
+
+/* ===== Vazio explicado ===== */
+.vazio-explicado {
+  font-size: 14px;
+  color: var(--texto-fraco);
+  border-left: 3px solid var(--gold);
+  background: var(--superficie-2);
+  border-radius: 0 var(--raio) var(--raio) 0;
+  padding: 12px 16px;
+  margin: 0;
+}

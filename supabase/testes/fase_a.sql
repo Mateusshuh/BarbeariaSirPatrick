@@ -1,20 +1,6 @@
 -- =============================================================================
 -- Barbearia Sir. Patrick — testes da Fase A (arquitetura com API)
 -- =============================================================================
--- Cole inteiro no SQL Editor do Supabase depois de rodar 001, 002, 003 e 004.
--- Ele cria duas contas de teste, tenta o que não pode ser feito, apaga tudo que
--- criou e termina devolvendo uma tabela: uma linha por teste.
---
--- A coluna "passou" precisa estar TODA em true.
---
--- Por que os blocos trocam de papel com set_config('role', ...): rodando como
--- postgres a RLS é ignorada e todo teste passaria por engano. Cada bloco vira
--- 'anon' ou 'authenticated' com o sub no JWT — exatamente o que o PostgREST faz
--- quando o navegador chama a API do Supabase.
---
--- Onde o teste insere agendamento como postgres, é de propósito: é assim que a
--- API grava, com credencial de dono.
--- =============================================================================
 
 drop table if exists public.teste_resultados;
 create table public.teste_resultados (
@@ -82,8 +68,6 @@ begin
     from generate_series(current_date + 1, current_date + 20, interval '1 day') d
    where extract(dow from d)::int in (select dia_semana from public.expediente where aberto);
 
-  -- A grade só responde a quem tem conta: a preparação entra como cliente para
-  -- perguntar quais horários existem.
   perform set_config('role', 'authenticated', true);
   perform set_config('request.jwt.claims',
     '{"sub":"11111111-1111-1111-1111-111111111111","role":"authenticated"}', true);
@@ -101,7 +85,6 @@ begin
     ('servico', v_serv::text), ('dia', v_dia::text),
     ('slot1', v_slots[1]::text), ('slot2', v_slots[2]::text), ('slot3', v_slots[3]::text);
 
-  -- Pedido da Ana, gravado como a API grava.
   insert into public.agendamentos (cliente_id, nome, telefone, servico_id, periodo, observacao)
   values ('11111111-1111-1111-1111-111111111111', 'Ana Teste', '55999990001',
           v_serv, tstzrange(v_slots[1], v_slots[1] + interval '5 min', '[)'), 'TESTE');
@@ -256,8 +239,7 @@ end $$;
 -- -----------------------------------------------------------------------------
 -- 4b — Cliente gravando agendamento direto pelo navegador: recusado
 -- -----------------------------------------------------------------------------
--- A porta de escrita do navegador foi fechada na 004: pedir horário é POST
--- /api/pedidos. Este teste é o que prova que ela está mesmo fechada.
+
 do $$
 declare v_dono text := current_user; v_res text := 'gravou (!)'; v_serv uuid; v_slot timestamptz;
 begin
@@ -359,8 +341,12 @@ declare
 begin
   select valor::uuid into v_serv from public.teste_fixtures where chave = 'servico';
 
-  -- Pedido feito 13 horas atrás (prazo padrão é 12), para um horário bem à
-  -- frente — o vencido é o prazo de resposta, não o horário do corte.
+  -- Este bloco grava como dono, e não como cliente. O bloco anterior restaurou
+  -- o role mas deixou o claim de JWT para trás: sem limpar, auth.uid() ainda
+  -- devolve a Ana, a validação de grade liga, e o horário de 100 dias à frente
+  -- é recusado por estar fora da janela de 30 dias.
+  perform set_config('request.jwt.claims', '', true);
+
   insert into public.agendamentos
     (cliente_id, nome, telefone, servico_id, periodo, criado_em, observacao)
   values ('22222222-2222-2222-2222-222222222222', 'Bruno Teste', '55999990002', v_serv,
@@ -415,5 +401,3 @@ drop function if exists public.teste_reg(int, text, text, text);
 select n, teste, esperado, obtido, passou
   from public.teste_resultados
  order by n;
-
--- Depois de conferir: drop table public.teste_resultados;
