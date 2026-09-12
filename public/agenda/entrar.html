@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Entrar — Barbearia Sir. Patrick</title>
+
+<!-- A agenda não é conteúdo de busca: é a porta de um sistema. -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1B1917">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20fill='%231B1917'/%3E%3Cg%20fill='none'%20stroke='%23C9A961'%20stroke-width='1.8'%20stroke-linecap='round'%3E%3Ccircle%20cx='9.5'%20cy='23'%20r='3.1'/%3E%3Ccircle%20cx='22.5'%20cy='23'%20r='3.1'/%3E%3Cpath%20d='M20.8%205.5%2011.6%2020.6M11.2%205.5l9.2%2015.1'/%3E%3C/g%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap">
+
+<link rel="stylesheet" href="/shared/tokens.css">
+<link rel="stylesheet" href="/agenda/agenda.css">
+</head>
+<body>
+
+<main class="porta">
+  <div class="porta-caixa">
+
+    <a class="porta-marca" href="/">
+      <span class="marca-nome">Sir. Patrick</span>
+      <span class="marca-kicker">BARBEARIA</span>
+    </a>
+
+    <!-- Muro de login sem explicação é onde a pessoa fecha a aba. -->
+    <p class="porta-motivo">
+      Sua conta guarda seus agendamentos e é por ela que você recebe
+      a confirmação do Patrick.
+    </p>
+
+    <p class="aviso aviso-atencao" id="aviso-topo" hidden></p>
+
+    <div class="abas" role="tablist" aria-label="Entrar ou criar conta">
+      <button class="aba" type="button" role="tab" id="aba-entrar"
+              aria-selected="true" aria-controls="painel-entrar">Entrar</button>
+      <button class="aba" type="button" role="tab" id="aba-criar"
+              aria-selected="false" aria-controls="painel-criar">Criar conta</button>
+    </div>
+
+    <!-- ===== Entrar ===== -->
+    <section class="painel" id="painel-entrar" role="tabpanel" aria-labelledby="aba-entrar">
+      <p class="aviso" id="aviso-entrar" hidden></p>
+
+      <form id="form-entrar" novalidate>
+        <label class="campo">
+          <span>E-mail</span>
+          <input type="email" name="email" autocomplete="email" required inputmode="email">
+        </label>
+
+        <label class="campo">
+          <span>Senha</span>
+          <input type="password" name="senha" autocomplete="current-password" required>
+        </label>
+
+        <button class="btn btn-dark btn-bloco" type="submit">Entrar</button>
+      </form>
+
+      <p class="porta-rodape">
+        <button type="button" id="link-esqueci">Esqueci minha senha</button>
+      </p>
+    </section>
+
+    <!-- ===== Criar conta =====
+         Quatro campos e nada mais. CPF, nascimento e endereço não têm uso
+         aqui, e cada campo extra é mais gente desistindo. -->
+    <section class="painel" id="painel-criar" role="tabpanel" aria-labelledby="aba-criar" hidden>
+      <p class="aviso" id="aviso-criar" hidden></p>
+
+      <form id="form-criar" novalidate>
+        <label class="campo">
+          <span>Nome</span>
+          <input type="text" name="nome" autocomplete="name" required
+                 placeholder="Como o Patrick te chama">
+        </label>
+
+        <label class="campo">
+          <span>WhatsApp</span>
+          <input type="tel" name="telefone" autocomplete="tel" required
+                 inputmode="numeric" placeholder="(55) 99999-0000">
+          <span class="campo-dica">É por aqui que o Patrick fala com você se precisar.</span>
+        </label>
+
+        <label class="campo">
+          <span>E-mail</span>
+          <input type="email" name="email" autocomplete="email" required inputmode="email">
+        </label>
+
+        <label class="campo">
+          <span>Senha</span>
+          <input type="password" name="senha" autocomplete="new-password" required minlength="6">
+          <span class="campo-dica">Pelo menos 6 caracteres.</span>
+        </label>
+
+        <button class="btn btn-gold btn-bloco" type="submit">Criar minha conta</button>
+      </form>
+    </section>
+
+    <!-- ===== Recuperar senha ===== -->
+    <section class="painel" id="painel-recuperar" hidden aria-label="Recuperar senha">
+      <h2 style="margin-bottom:8px">Esqueci <em>minha senha</em></h2>
+      <p class="texto-apoio" style="margin-bottom:18px">
+        Escreva seu e-mail e enviamos um link para você criar uma senha nova.
+      </p>
+
+      <p class="aviso" id="aviso-recuperar" hidden></p>
+
+      <form id="form-recuperar" novalidate>
+        <label class="campo">
+          <span>E-mail</span>
+          <input type="email" name="email" autocomplete="email" required inputmode="email">
+        </label>
+        <button class="btn btn-dark btn-bloco" type="submit">Enviar o link</button>
+      </form>
+
+      <p class="porta-rodape">
+        <button type="button" id="link-voltar">Voltar para entrar</button>
+      </p>
+    </section>
+
+    <p class="porta-rodape" style="margin-top:26px">
+      <a href="/" style="text-decoration:none;border-bottom:1px solid var(--line)">Voltar ao site</a>
+    </p>
+
+  </div>
+</main>
+
+<script type="module" src="/agenda/entrar.js"></script>
+<noscript>
+  <p style="padding:24px;text-align:center">
+    A agenda precisa de JavaScript. Ative e recarregue, ou chame no WhatsApp.
+  </p>
+</noscript>
+</body>
+</html>

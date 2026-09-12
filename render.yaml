@@ -1,0 +1,104 @@
+# =============================================================================
+# Barbearia Sir. Patrick — dois serviços no Render
+# =============================================================================
+#   sirpatrick-site  Static Site   → todo o front. Não dorme nunca.
+#   sirpatrick-api   Web Service   → as escritas e o envio das notificações.
+#
+# O banco NÃO está aqui: vive no Supabase. Postgres do plano gratuito do Render
+# expira 30 dias depois de criado e apaga os dados — o que inviabiliza uma
+# agenda com cliente real.
+#
+# Cron job também não: não existe no plano gratuito. As rotinas ficam no pg_cron
+# do Supabase.
+#
+# Nenhum segredo neste arquivo. Tudo que é chave entra com sync: false, que faz
+# o Render pedir o valor na hora de criar o serviço.
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # API
+  # ---------------------------------------------------------------------------
+  - type: web
+    name: sirpatrick-api
+    runtime: node
+    plan: free
+    region: oregon          # a região gratuita mais estável; o banco fica em SP
+    rootDir: api
+    buildCommand: npm ci
+    startCommand: node src/index.js
+    healthCheckPath: /api/saude
+    autoDeploy: true
+
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+
+      # Connection string do POOLER do Supabase (host com pooler.supabase.com).
+      # A conexão direta só responde em IPv6 e o Render pode não alcançá-la.
+      - key: DATABASE_URL
+        sync: false
+
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+
+      # Origem do Static Site, sem barra no fim.
+      - key: ORIGEM_PERMITIDA
+        sync: false
+
+      # npx web-push generate-vapid-keys
+      - key: VAPID_PUBLIC_KEY
+        sync: false
+      - key: VAPID_PRIVATE_KEY
+        sync: false
+      - key: VAPID_SUBJECT
+        sync: false
+
+      - key: RESEND_API_KEY
+        sync: false
+      - key: EMAIL_REMETENTE
+        sync: false
+
+  # ---------------------------------------------------------------------------
+  # Site
+  # ---------------------------------------------------------------------------
+  # Em blueprints antigos esta chave aparece como "type: static"; a forma atual
+  # é type: web com runtime: static.
+  - type: web
+    name: sirpatrick-site
+    runtime: static
+    staticPublishPath: ./public
+    pullRequestPreviewsEnabled: false
+
+    headers:
+      # Fotos podem ficar guardadas por um ano: elas só mudam quando trocam de
+      # nome. Por isso, ao trocar uma foto, troque o nome do arquivo.
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+
+      # HTML, CSS e JS têm nome fixo e mudam a cada publicação. Cache longo aqui
+      # é cliente vendo a agenda da semana passada.
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=0, must-revalidate
+
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+
+      # Agenda e painel não são conteúdo de busca.
+      - path: /agenda/*
+        name: X-Robots-Tag
+        value: noindex
+      - path: /admin/*
+        name: X-Robots-Tag
+        value: noindex

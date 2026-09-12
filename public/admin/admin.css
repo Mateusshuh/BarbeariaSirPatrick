@@ -1,0 +1,215 @@
+/* =========================================================
+   Painel do Patrick
+   Pensado para o celular primeiro: é de lá que ele vai olhar,
+   entre um corte e outro, com uma mão só.
+   ========================================================= */
+
+.corpo-admin { padding: 22px 0 0; }
+
+.secao-admin { margin-bottom: 38px; }
+
+.secao-titulo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.secao-titulo h2 { font-size: 21px; }
+
+.contador {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted-claro);
+}
+
+/* ===== Fila de pedidos =====
+   Se confirmar der mais trabalho que responder um WhatsApp, ele abandona o
+   painel e volta para o caderno. O botão Confirmar é grande, é o primeiro do
+   cartão e não abre tela nenhuma. */
+.fila-item {
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--warn);
+  background: #fff;
+  padding: 16px 18px;
+}
+
+.fila-item + .fila-item { margin-top: 10px; }
+
+.fila-nome {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 20px;
+  margin-bottom: 2px;
+}
+
+.fila-quando { font-size: 15px; font-weight: 600; }
+
+.fila-meta {
+  font-size: 12.5px;
+  color: var(--muted-claro);
+  margin-top: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+}
+
+/* Quanto falta para o prazo vencer. Vermelho quando falta menos de uma hora:
+   passou disso, o sistema decide sozinho. */
+.prazo-curto { color: var(--bad); font-weight: 600; }
+
+.fila-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.fila-acoes .btn { flex: 1 1 auto; min-width: 116px; }
+
+/* Fila vazia é a única métrica que importa para ele. */
+.fila-vazia {
+  border: 1px solid var(--line);
+  background: #fff;
+  padding: 28px 20px;
+  text-align: center;
+}
+
+.fila-vazia h3 { font-size: 22px; margin-bottom: 6px; }
+.fila-vazia p { color: var(--muted-claro); margin: 0; }
+
+/* ===== Agenda do dia ===== */
+.dia-controles {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.dia-controles input[type="date"] { width: auto; }
+
+.linha-tempo { border-top: 1px solid var(--line); }
+
+.bloco {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 14px 4px;
+  border-bottom: 1px solid var(--line);
+}
+
+.bloco-hora {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 18px;
+  min-width: 62px;
+  padding-top: 1px;
+}
+
+.bloco-corpo { flex: 1; min-width: 0; }
+
+.bloco-nome { font-weight: 600; }
+
+.bloco-meta {
+  font-size: 12.5px;
+  color: var(--muted-claro);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 2px;
+}
+
+.bloco-acoes { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+
+.bloco-acoes .btn { padding: 9px 13px; font-size: 12px; }
+
+/* Pendente e confirmado precisam ser distinguíveis de relance, sem leitura. */
+.bloco[data-status="pendente"] { border-left: 3px solid var(--warn); padding-left: 12px; }
+.bloco[data-status="confirmado"] { border-left: 3px solid var(--ok); padding-left: 12px; }
+.bloco[data-status="concluido"] { opacity: .55; }
+.bloco[data-status="cancelado"], .bloco[data-status="recusado"],
+.bloco[data-status="nao_compareceu"] { opacity: .55; }
+.bloco[data-status="cancelado"] .bloco-hora,
+.bloco[data-status="recusado"] .bloco-hora,
+.bloco[data-status="nao_compareceu"] .bloco-hora { text-decoration: line-through; }
+
+.bloco-bloqueio {
+  background: repeating-linear-gradient(
+    45deg, var(--cream-2), var(--cream-2) 6px, transparent 6px, transparent 12px);
+  border-left: 3px solid var(--muted);
+  padding-left: 12px;
+}
+
+/* ===== Barra de ações rápidas ===== */
+.acoes-rapidas {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 26px;
+}
+
+/* ===== Diálogos =====
+   <dialog> nativo: o navegador cuida do foco preso e do Esc, e é menos código
+   do que fazer isso à mão — e melhor feito. */
+dialog {
+  border: 1px solid var(--ink);
+  background: var(--cream);
+  color: var(--ink);
+  padding: 0;
+  width: min(440px, calc(100vw - 32px));
+  max-height: calc(100vh - 40px);
+}
+
+dialog::backdrop { background: rgba(20, 18, 16, .55); }
+
+.dialogo-corpo { padding: 22px 22px 24px; }
+.dialogo-corpo h2 { font-size: 20px; margin-bottom: 14px; }
+.dialogo-acoes { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; flex-wrap: wrap; }
+
+.par-campos { display: flex; gap: 10px; }
+.par-campos .campo { flex: 1; }
+
+/* ===== Configurações ===== */
+.tabela-config { width: 100%; border-collapse: collapse; font-size: 14px; }
+
+.tabela-config th {
+  text-align: left;
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted-claro);
+  font-weight: 600;
+  padding: 0 10px 8px 0;
+}
+
+.tabela-config td { padding: 7px 10px 7px 0; border-top: 1px solid var(--line); vertical-align: middle; }
+.tabela-config input[type="time"], .tabela-config input[type="number"] { padding: 8px 9px; }
+.tabela-config input[type="checkbox"] { width: auto; }
+
+.rolagem-lateral { overflow-x: auto; }
+
+.item-servico {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  border: 1px solid var(--line);
+  background: #fff;
+  padding: 14px 16px;
+}
+
+.item-servico + .item-servico { margin-top: -1px; }
+.item-servico .campo { margin-bottom: 0; }
+.item-servico .campo-nome { flex: 2 1 160px; }
+.item-servico .campo-curto { flex: 0 1 110px; }
+
+@media (max-width: 620px) {
+  .fila-acoes .btn { flex: 1 1 100%; }
+  .bloco { flex-direction: column; gap: 4px; }
+  .bloco-hora { min-width: 0; }
+}

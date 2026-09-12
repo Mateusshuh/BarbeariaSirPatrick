@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pt-BR" class="aguardando-sessao">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Configurações — Sir. Patrick</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1B1917">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Sir. Patrick">
+
+<link rel="manifest" href="/admin/manifest.json">
+<link rel="apple-touch-icon" href="/admin/icone-180.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20fill='%231B1917'/%3E%3Cg%20fill='none'%20stroke='%23C9A961'%20stroke-width='1.8'%20stroke-linecap='round'%3E%3Ccircle%20cx='9.5'%20cy='23'%20r='3.1'/%3E%3Ccircle%20cx='22.5'%20cy='23'%20r='3.1'/%3E%3Cpath%20d='M20.8%205.5%2011.6%2020.6M11.2%205.5l9.2%2015.1'/%3E%3C/g%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap">
+
+<link rel="stylesheet" href="/shared/tokens.css">
+<link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body>
+
+<header class="topo" id="topo"></header>
+
+<main class="corpo-admin shell">
+
+  <h1 class="titulo-tela">Configurações</h1>
+  <p class="subtitulo-tela">Tudo aqui muda sem mexer no código. As alterações valem na hora, para todo mundo.</p>
+
+  <p class="aviso" id="aviso-geral" hidden></p>
+
+  <!-- ===== Serviços ===== -->
+  <section class="secao-admin" aria-labelledby="titulo-servicos">
+    <div class="secao-titulo">
+      <h2 id="titulo-servicos">Serviços</h2>
+      <span class="contador">nome, duração e preço</span>
+    </div>
+
+    <p class="texto-apoio" style="margin-bottom:14px">
+      A duração define o tamanho do bloco na agenda. Desmarcar “ativo” esconde o
+      serviço do cliente sem apagar o histórico.
+    </p>
+
+    <div id="lista-servicos"><p class="carregando">Carregando</p></div>
+
+    <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+      <button class="btn btn-linha" type="button" id="btn-novo-servico">+ Novo serviço</button>
+      <button class="btn btn-dark" type="button" id="btn-salvar-servicos">Salvar serviços</button>
+    </div>
+  </section>
+
+  <!-- ===== Expediente ===== -->
+  <section class="secao-admin" aria-labelledby="titulo-expediente">
+    <div class="secao-titulo">
+      <h2 id="titulo-expediente">Expediente</h2>
+      <span class="contador">horário de cada dia</span>
+    </div>
+
+    <p class="texto-apoio" style="margin-bottom:14px">
+      Deixe o intervalo em branco nos dias sem almoço. Dia desmarcado some do
+      calendário do cliente.
+    </p>
+
+    <div class="rolagem-lateral">
+      <table class="tabela-config" id="tabela-expediente">
+        <thead>
+          <tr>
+            <th>Dia</th><th>Abre</th><th>Abre às</th><th>Fecha às</th>
+            <th>Almoço de</th><th>até</th>
+          </tr>
+        </thead>
+        <tbody><tr><td colspan="6" class="carregando">Carregando</td></tr></tbody>
+      </table>
+    </div>
+
+    <button class="btn btn-dark" type="button" id="btn-salvar-expediente" style="margin-top:14px">
+      Salvar expediente
+    </button>
+  </section>
+
+  <!-- ===== Regras ===== -->
+  <section class="secao-admin" aria-labelledby="titulo-regras">
+    <div class="secao-titulo">
+      <h2 id="titulo-regras">Regras da agenda</h2>
+      <span class="contador">valem para todo mundo</span>
+    </div>
+
+    <div id="lista-config" style="max-width:560px"><p class="carregando">Carregando</p></div>
+
+    <button class="btn btn-dark" type="button" id="btn-salvar-config" style="margin-top:16px">
+      Salvar regras
+    </button>
+  </section>
+
+  <footer class="rodape">
+    <a href="/admin/">Voltar ao painel</a> ·
+    <span>Promover alguém a administrador é feito à mão no painel do Supabase — de propósito.</span>
+  </footer>
+
+</main>
+
+<script type="module" src="/admin/config-tela.js"></script>
+</body>
+</html>

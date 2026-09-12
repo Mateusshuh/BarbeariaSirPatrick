@@ -1,0 +1,325 @@
+/* =========================================================
+   Barbearia Sir. Patrick — base da agenda e do painel
+   Mesma linguagem do site: retângulo reto, filete de 1px,
+   muito ar. Sem sombra, sem canto arredondado, sem gradiente.
+   ========================================================= */
+
+:root {
+  --ink: #1B1917;
+  --ink-2: #141210;
+  --cream: #F7F2E8;
+  --cream-2: #EFE7D8;
+  --gold: #C9A961;
+  --gold-soft: #D8C094;
+  --muted: #8A8177;
+  --line: #E2D8C6;
+
+  /* --muted reprova no WCAG AA como texto corrido sobre fundo claro.
+     Sobre o creme usa-se esta versão mais fechada; sobre fundo escuro o
+     --muted original continua valendo. */
+  --muted-claro: #6B645A;
+  --line-dark: rgba(247, 242, 232, .14);
+  --cream-70: rgba(247, 242, 232, .70);
+
+  /* Estados. São as três cores que o cliente lê de relance, então não
+     mudam de tela para tela: pendente é sempre a mesma cor em toda parte. */
+  --warn: #B07407;
+  --ok: #2E6F4E;
+  --bad: #9C3B2E;
+
+  --warn-fundo: #FBF3E3;
+  --ok-fundo: #E9F1EC;
+  --bad-fundo: #F7EAE7;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: "DM Sans", system-ui, -apple-system, Segoe UI, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { display: block; max-width: 100%; }
+
+h1, h2, h3 {
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -.01em;
+  line-height: 1.15;
+}
+
+h1 { font-size: clamp(28px, 5vw, 40px); }
+h2 { font-size: clamp(21px, 3.4vw, 27px); }
+h3 { font-size: 17px; }
+
+/* O destaque do título vive sempre em <em>: itálico e dourado. */
+em { font-style: italic; color: var(--gold); }
+
+p { margin: 0 0 14px; }
+a { color: inherit; }
+
+/* Foco de teclado sempre visível. Quem navega por Tab precisa saber onde
+   está, e a agenda inteira é navegável por Tab. */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* Tela protegida começa invisível e só aparece quando a guarda de sessão
+   confirma quem está ali. Sem isso a grade pisca antes do redirecionamento, e
+   piscar já é entregar informação para quem não deveria ver. */
+.aguardando-sessao body { visibility: hidden; }
+
+.shell {
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--muted-claro);
+  margin: 0 0 10px;
+}
+
+.texto-apoio { color: var(--muted-claro); font-size: 14px; }
+
+/* ===== Cabeçalho das telas internas =====
+   Escuro e sólido, sem transparência: aqui não existe foto por baixo. */
+.topo {
+  background: var(--ink);
+  color: var(--cream);
+  border-bottom: 1px solid var(--line-dark);
+}
+
+.topo-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 68px;
+  padding-block: 12px;
+}
+
+.topo a { color: inherit; text-decoration: none; }
+
+.marca {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 9px;
+}
+
+.marca-nome {
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.marca-kicker {
+  font-size: 9.5px;
+  letter-spacing: .22em;
+  color: var(--gold);
+}
+
+.topo-conta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 13px;
+  color: var(--cream-70);
+  flex-wrap: wrap;
+}
+
+.topo-conta strong { color: var(--cream); font-weight: 600; }
+
+.topo-conta a {
+  border-bottom: 1px solid var(--line-dark);
+  padding-bottom: 2px;
+}
+
+.topo-conta a:hover { border-bottom-color: var(--gold); color: var(--gold); }
+
+/* ===== Botões ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .55em;
+  border: 1px solid transparent;
+  padding: 14px 22px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: .01em;
+  text-decoration: none;
+  cursor: pointer;
+  background: none;
+  transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+}
+
+.btn-gold { background: var(--gold); color: var(--ink-2); }
+.btn-gold:hover:not(:disabled) { background: var(--gold-soft); }
+
+.btn-dark { background: var(--ink); color: var(--cream); }
+.btn-dark:hover:not(:disabled) { background: var(--ink-2); }
+
+.btn-linha { border-color: var(--line); color: var(--ink); background: var(--cream); }
+.btn-linha:hover:not(:disabled) { border-color: var(--ink); }
+
+.btn-whats { background: #25D366; color: #06280f; }
+.btn-whats:hover:not(:disabled) { background: #1fbb59; }
+
+.btn-perigo { border-color: var(--bad); color: var(--bad); }
+.btn-perigo:hover:not(:disabled) { background: var(--bad); color: var(--cream); }
+
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+
+.btn-bloco { width: 100%; }
+
+/* ===== Formulários ===== */
+.campo { display: block; margin-bottom: 16px; }
+
+.campo > span {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--muted-claro);
+  margin-bottom: 6px;
+}
+
+input, select, textarea {
+  width: 100%;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid var(--line);
+  padding: 12px 13px;
+  border-radius: 0;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: 2px solid var(--gold);
+  outline-offset: -1px;
+  border-color: var(--gold);
+}
+
+input[aria-invalid="true"] { border-color: var(--bad); }
+
+.campo-dica { font-size: 12.5px; color: var(--muted-claro); margin: 6px 0 0; }
+
+/* ===== Avisos =====
+   Toda mensagem de erro diz o que fazer em seguida. "Erro ao entrar" não
+   ajuda ninguém, então o texto vem sempre pronto de ui.js. */
+.aviso {
+  border-left: 3px solid var(--muted);
+  background: var(--cream-2);
+  padding: 12px 14px;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.aviso[hidden] { display: none; }
+.aviso-erro { border-left-color: var(--bad); background: var(--bad-fundo); color: #6d2a20; }
+.aviso-ok { border-left-color: var(--ok); background: var(--ok-fundo); color: #1e4c35; }
+.aviso-atencao { border-left-color: var(--warn); background: var(--warn-fundo); color: #7a5205; }
+.aviso a { font-weight: 600; }
+
+/* ===== Selo de estado =====
+   A cor faz o trabalho: o cliente entende o estado do pedido antes de ler. */
+.selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 4px 9px;
+  border: 1px solid currentColor;
+}
+
+.selo::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background: currentColor;
+}
+
+.selo-pendente { color: var(--warn); }
+.selo-confirmado { color: var(--ok); }
+.selo-recusado, .selo-cancelado, .selo-nao_compareceu { color: var(--bad); }
+.selo-concluido { color: var(--muted-claro); }
+
+/* ===== Cartões e listas ===== */
+.cartao {
+  border: 1px solid var(--line);
+  background: #fff;
+  padding: 20px;
+}
+
+.cartao + .cartao { margin-top: -1px; }
+
+.linha-divisoria { border: 0; border-top: 1px solid var(--line); margin: 24px 0; }
+
+/* ===== Carregando =====
+   Um traço que pulsa, não um spinner: combina com o resto e não gira. */
+.carregando {
+  color: var(--muted-claro);
+  font-size: 13.5px;
+  padding: 18px 0;
+}
+
+.carregando::after {
+  content: "";
+  display: inline-block;
+  width: 22px;
+  height: 1px;
+  background: var(--gold);
+  margin-left: 8px;
+  vertical-align: middle;
+  animation: pulso 1.1s ease-in-out infinite;
+}
+
+@keyframes pulso { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+}
+
+/* Lido por leitor de tela, invisível na tela. */
+.so-leitor {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ===== Rodapé simples ===== */
+.rodape {
+  border-top: 1px solid var(--line);
+  margin-top: 48px;
+  padding: 22px 0 34px;
+  font-size: 12.5px;
+  color: var(--muted-claro);
+}
+
+.rodape a { text-decoration: none; border-bottom: 1px solid var(--line); }

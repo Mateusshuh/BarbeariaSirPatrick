@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="pt-BR" class="aguardando-sessao">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel — Sir. Patrick</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1B1917">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Sir. Patrick">
+
+<!-- O painel é instalado na tela de início do celular (Fase 4). -->
+<link rel="manifest" href="/admin/manifest.json">
+<link rel="apple-touch-icon" href="/admin/icone-180.png">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20fill='%231B1917'/%3E%3Cg%20fill='none'%20stroke='%23C9A961'%20stroke-width='1.8'%20stroke-linecap='round'%3E%3Ccircle%20cx='9.5'%20cy='23'%20r='3.1'/%3E%3Ccircle%20cx='22.5'%20cy='23'%20r='3.1'/%3E%3Cpath%20d='M20.8%205.5%2011.6%2020.6M11.2%205.5l9.2%2015.1'/%3E%3C/g%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap">
+
+<link rel="stylesheet" href="/shared/tokens.css">
+<link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body>
+
+<header class="topo" id="topo"></header>
+
+<main class="corpo-admin shell">
+
+  <p class="aviso" id="aviso-geral" hidden></p>
+  <div id="caixa-push"></div>
+
+  <!-- ===== Fila de pedidos: no topo, antes de tudo ===== -->
+  <section class="secao-admin" aria-labelledby="titulo-fila">
+    <div class="secao-titulo">
+      <h2 id="titulo-fila">Pedidos <em>esperando você</em></h2>
+      <span class="contador" id="contador-fila"></span>
+    </div>
+    <div id="fila" aria-live="polite">
+      <p class="carregando">Carregando a fila</p>
+    </div>
+  </section>
+
+  <!-- ===== Ações rápidas ===== -->
+  <div class="acoes-rapidas">
+    <button class="btn btn-linha" type="button" id="btn-encaixe">+ Encaixe</button>
+    <button class="btn btn-linha" type="button" id="btn-bloqueio">Bloquear horário</button>
+    <a class="btn btn-linha" href="/admin/config.html">Configurações</a>
+  </div>
+
+  <!-- ===== Agenda do dia ===== -->
+  <section class="secao-admin" aria-labelledby="titulo-dia">
+    <div class="secao-titulo">
+      <h2 id="titulo-dia">Agenda do dia</h2>
+      <span class="contador" id="contador-dia"></span>
+    </div>
+
+    <div class="dia-controles">
+      <button class="btn btn-linha" type="button" data-navega="-1" aria-label="Dia anterior">‹</button>
+      <input type="date" id="data-agenda" aria-label="Dia da agenda">
+      <button class="btn btn-linha" type="button" data-navega="1" aria-label="Próximo dia">›</button>
+      <button class="btn btn-linha" type="button" id="btn-hoje">Hoje</button>
+    </div>
+
+    <div class="linha-tempo" id="linha-tempo" aria-live="polite">
+      <p class="carregando">Carregando o dia</p>
+    </div>
+  </section>
+
+  <footer class="rodape">
+    Painel da Barbearia Sir. Patrick · <a href="/">ver o site</a>
+  </footer>
+
+</main>
+
+<!-- ===== Diálogos ===== -->
+
+<dialog id="dlg-recusar">
+  <form method="dialog" class="dialogo-corpo" id="form-recusar">
+    <h2>Recusar o pedido</h2>
+    <p class="texto-apoio" id="recusar-quem"></p>
+    <label class="campo">
+      <span>Motivo (opcional)</span>
+      <input type="text" name="motivo" placeholder="Ex.: já tenho compromisso nesse horário">
+      <span class="campo-dica">O cliente recebe esse motivo junto com o aviso.</span>
+    </label>
+    <div class="dialogo-acoes">
+      <button class="btn btn-linha" type="button" data-fechar>Voltar</button>
+      <button class="btn btn-perigo" value="confirmar">Recusar o pedido</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlg-encaixe">
+  <form method="dialog" class="dialogo-corpo" id="form-encaixe">
+    <h2>Encaixe</h2>
+    <p class="texto-apoio">Cliente que chegou sem marcar. Entra já confirmado.</p>
+    <label class="campo">
+      <span>Nome</span>
+      <input type="text" name="nome" required placeholder="Como ele se chama">
+    </label>
+    <label class="campo">
+      <span>Serviço</span>
+      <select name="servico" required></select>
+    </label>
+    <div class="par-campos">
+      <label class="campo">
+        <span>Dia</span>
+        <input type="date" name="dia" required>
+      </label>
+      <label class="campo">
+        <span>Começa às</span>
+        <input type="time" name="hora" required step="300">
+      </label>
+    </div>
+    <p class="aviso" id="aviso-encaixe" hidden></p>
+    <div class="dialogo-acoes">
+      <button class="btn btn-linha" type="button" data-fechar>Cancelar</button>
+      <button class="btn btn-gold" value="confirmar">Gravar encaixe</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlg-bloqueio">
+  <form method="dialog" class="dialogo-corpo" id="form-bloqueio">
+    <h2>Bloquear horário</h2>
+    <p class="texto-apoio">Uma tarde, um dia, uma semana. Some da agenda do cliente.</p>
+    <div class="par-campos">
+      <label class="campo">
+        <span>De</span>
+        <input type="datetime-local" name="inicio" required>
+      </label>
+      <label class="campo">
+        <span>Até</span>
+        <input type="datetime-local" name="fim" required>
+      </label>
+    </div>
+    <label class="campo">
+      <span>Motivo (só você vê)</span>
+      <input type="text" name="motivo" placeholder="Ex.: viagem, médico, curso">
+    </label>
+    <p class="aviso" id="aviso-bloqueio" hidden></p>
+    <div class="dialogo-acoes">
+      <button class="btn btn-linha" type="button" data-fechar>Cancelar</button>
+      <button class="btn btn-dark" value="confirmar">Bloquear</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlg-remarcar">
+  <form method="dialog" class="dialogo-corpo" id="form-remarcar">
+    <h2>Remarcar</h2>
+    <p class="texto-apoio" id="remarcar-quem"></p>
+    <div class="par-campos">
+      <label class="campo">
+        <span>Novo dia</span>
+        <input type="date" name="dia" required>
+      </label>
+      <label class="campo">
+        <span>Novo horário</span>
+        <input type="time" name="hora" required step="300">
+      </label>
+    </div>
+    <p class="aviso" id="aviso-remarcar" hidden></p>
+    <div class="dialogo-acoes">
+      <button class="btn btn-linha" type="button" data-fechar>Voltar</button>
+      <button class="btn btn-dark" value="confirmar">Mudar o horário</button>
+    </div>
+  </form>
+</dialog>
+
+<script type="module" src="/admin/admin.js"></script>
+</body>
+</html>

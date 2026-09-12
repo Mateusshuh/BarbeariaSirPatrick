@@ -1,0 +1,953 @@
+/* =========================================================
+   Barbearia Sir. Patrick — folha única
+   Linguagem visual: retângulo reto, filete de 1px, muito ar.
+   Sem sombra, sem canto arredondado, sem gradiente decorativo.
+   Os únicos gradientes do arquivo são os dois véus sobre a foto
+   do hero, e existem por legibilidade, não por enfeite.
+   ========================================================= */
+
+:root {
+  --ink: #1B1917;
+  --ink-2: #141210;
+  --cream: #F7F2E8;
+  --cream-2: #EFE7D8;
+  --gold: #C9A961;
+  --gold-soft: #D8C094;
+  --muted: #8A8177;
+  --line: #E2D8C6;
+
+  /* --muted tem 3,1:1 contra --cream-2 e reprova no WCAG AA como texto
+     corrido. Sobre fundo escuro ele passa (4,9:1 contra --ink-2), então
+     em vez de mexer no token: --muted continua valendo no escuro, e o
+     texto sobre fundo claro usa esta versão mais fechada (4,8:1). */
+  --muted-claro: #6B645A;
+
+  /* Filetes e textos sobre fundo escuro: o creme em opacidade baixa
+     lê melhor que um cinza fixo, porque acompanha a foto atrás. */
+  --line-dark: rgba(247, 242, 232, .14);
+  --cream-70: rgba(247, 242, 232, .70);
+  --cream-55: rgba(247, 242, 232, .55);
+
+  --header-h: 90px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  /* overflow-x é rede de segurança: o layout já é contido, mas um véu ou
+     um bloco de horários não pode empurrar a página para os lados. */
+  overflow-x: hidden;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: "DM Sans", system-ui, -apple-system, Segoe UI, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { display: block; max-width: 100%; }
+
+h1, h2, h3 {
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -.01em;
+}
+
+/* O destaque do título vive sempre em <em>: itálico e dourado. */
+em { font-style: italic; color: var(--gold); }
+
+p { margin: 0; }
+
+/* Foco sempre visível. Nunca outline:none sozinho. */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+/* Âncoras internas precisam folgar a altura do header fixo. */
+section[id] { scroll-margin-top: var(--header-h); }
+
+.shell {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.eyebrow {
+  font-size: 10.5px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .3em;
+  color: var(--gold);
+  margin-bottom: 22px;
+}
+
+/* ===== Botões =====
+   Todo botão que navega é <a>. Nenhum tem raio nem sombra. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .55em;
+  border: 1px solid transparent;
+  padding: 15px 24px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: .01em;
+  text-decoration: none;
+  transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+}
+
+/* Contorno sobre foto. Nunca sólido, senão briga com o botão do hero. */
+.btn-ghost {
+  color: var(--cream);
+  border-color: rgba(247, 242, 232, .4);
+}
+.btn-ghost:hover { border-color: rgba(247, 242, 232, .85); }
+
+.btn-gold { background: var(--gold); color: var(--ink-2); }
+.btn-gold:hover { background: var(--gold-soft); }
+
+.btn-dark { background: var(--ink); color: var(--cream); }
+.btn-dark:hover { background: var(--ink-2); }
+
+.btn-ghost-dark {
+  color: var(--cream);
+  border-color: rgba(247, 242, 232, .35);
+}
+.btn-ghost-dark:hover { border-color: var(--gold); color: var(--gold); }
+
+.btn-whats { background: #25D366; color: #06280f; }
+.btn-whats:hover { background: #1fbb59; }
+
+/* ===== Header =====
+   Fixo desde o começo: acompanha a rolagem em toda a página. Sobre a foto
+   ele é transparente (o véu do hero garante a legibilidade) e, quando a
+   foto sai de baixo dele, o .is-stuck só troca a cor — a posição não muda,
+   então não existe salto no momento da troca. */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  height: var(--header-h);
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background-color 200ms ease, border-color 200ms ease;
+}
+
+.site-header.is-stuck {
+  background: var(--ink);
+  border-bottom-color: var(--line-dark);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  height: var(--header-h);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  color: var(--cream);
+  text-decoration: none;
+}
+.brand-mark { align-self: center; color: var(--gold); flex: none; }
+.brand-name {
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 600;
+  font-size: 21px;
+  line-height: 1;
+  /* Sem isso o nome quebra em "Sir." / "Patrick" quando o botão aperta
+     o header no celular. */
+  white-space: nowrap;
+}
+.brand-kicker {
+  font-size: 8.5px;
+  font-weight: 500;
+  letter-spacing: .3em;
+  color: var(--cream-55);
+  white-space: nowrap;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+
+.header-ig {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--cream-70);
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+.header-ig:hover { color: var(--cream); }
+
+/* ===== Hero ===== */
+.hero {
+  position: relative;
+  height: 730px;
+  overflow: hidden;
+  /* Fundo escuro por baixo: enquanto a foto não carrega (ou se faltar),
+     o texto creme continua legível. */
+  background: var(--ink-2);
+}
+
+/* Marcador invisível de "estamos no topo". A 28px do começo: dá uma folga
+   para rolagens mínimas não ficarem piscando o fundo do header. */
+.topo-sentinela {
+  position: absolute;
+  top: 28px;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
+/* A foto de hoje é provisória e pequena. O cover + object-position já
+   assume uma imagem grande no lugar, sem precisar mexer no CSS depois. */
+.hero-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 62%;
+}
+
+/* Camada 1: escurece na diagonal, da esquerda para a direita, para o
+   texto do canto inferior esquerdo ter contraste em qualquer foto. */
+.hero-wash {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    rgba(12, 11, 10, .90) 0%,
+    rgba(12, 11, 10, .62) 42%,
+    rgba(12, 11, 10, .20) 100%
+  );
+}
+
+/* Camada 2: véu do topo. É só isso que segura o header legível quando a
+   parte de cima da foto é clara (céu, toldo, letreiro). */
+.hero-veil {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 190px;
+  background: linear-gradient(180deg, rgba(12, 11, 10, .75), rgba(12, 11, 10, 0));
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 48px;
+  padding-bottom: 68px;
+}
+
+.hero-copy { max-width: 620px; }
+
+.hero h1 {
+  font-size: 63px;
+  line-height: 1.05;
+  color: var(--cream);
+  margin-bottom: 26px;
+}
+
+.hero-lead {
+  max-width: 430px;
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: var(--cream-70);
+  margin-bottom: 34px;
+}
+
+.hero-note {
+  display: flex;
+  align-items: center;
+  font-size: 12.5px;
+  color: var(--cream-55);
+}
+.hero-notes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 26px;
+  margin-top: 22px;
+}
+.hero-note .dot {
+  flex: none;
+  width: 5px;
+  height: 5px;
+  margin-right: 10px;
+  background: var(--gold);
+}
+
+.hero-place {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 9px;
+  text-align: right;
+  padding-bottom: 4px;
+}
+.hero-place-name {
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--cream);
+}
+.hero-place-city {
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .26em;
+  color: var(--cream-55);
+}
+
+/* ===== Chamada da agenda =====
+   Uma chamada editorial para levar o visitante direto à reserva. */
+.agenda {
+  position: relative;
+  overflow: hidden;
+  background: var(--cream-2);
+  padding: 104px 0 112px;
+}
+
+.agenda::before {
+  content: "AGENDA";
+  position: absolute;
+  top: 58px;
+  right: -18px;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 160px;
+  line-height: 1;
+  color: rgba(201, 169, 97, .09);
+  pointer-events: none;
+}
+
+.agenda-inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(260px, .82fr) minmax(500px, 1.18fr);
+  align-items: center;
+  gap: 88px;
+}
+
+.agenda h2 {
+  max-width: 460px;
+  font-size: 50px;
+  line-height: 1.12;
+  margin-bottom: 24px;
+}
+
+.agenda-lead {
+  max-width: 400px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--muted-claro);
+}
+
+.agenda-note {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 34px;
+  font-size: 12px;
+  color: var(--muted-claro);
+}
+
+.agenda-status {
+  width: 7px;
+  height: 7px;
+  background: #4c9c68;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(76, 156, 104, .12);
+}
+
+.agenda-booking {
+  min-width: 0;
+  padding: 30px;
+  background: var(--ink);
+  color: var(--cream);
+}
+
+.agenda-booking-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 23px;
+  border-bottom: 1px solid var(--line-dark);
+}
+
+.agenda-booking-kicker {
+  display: block;
+  margin-bottom: 0;
+  color: var(--gold);
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 25px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -.01em;
+}
+
+.agenda-booking-head strong {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.agenda-punchline {
+  margin: 30px 0 25px;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 35px;
+  line-height: 1.08;
+  color: var(--cream);
+}
+
+.agenda-punchline em {
+  color: var(--gold);
+}
+
+.agenda-perks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-bottom: 30px;
+  color: var(--cream-70);
+  font-size: 11.5px;
+}
+
+.agenda-perks span {
+  white-space: nowrap;
+}
+
+/* ===== Serviços e preços ===== */
+.servicos {
+  background: var(--cream);
+  padding: 112px 0 118px;
+}
+
+.servicos-inner {
+  display: grid;
+  grid-template-columns: minmax(240px, .75fr) minmax(420px, 1.25fr);
+  align-items: start;
+  gap: 96px;
+}
+
+.servicos-intro h2 {
+  max-width: 360px;
+  margin-bottom: 22px;
+  font-size: 46px;
+  line-height: 1.1;
+}
+
+.servicos-intro > p:last-child {
+  max-width: 300px;
+  color: var(--muted-claro);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.servicos-lista {
+  border-top: 1px solid var(--line);
+}
+
+.servico {
+  border-bottom: 1px solid var(--line);
+}
+
+.servico-trigger {
+  position: relative;
+  display: grid;
+  grid-template-columns: 44px 1fr auto 24px;
+  align-items: center;
+  width: 100%;
+  min-height: 82px;
+  gap: 18px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: color 180ms ease;
+}
+
+.servico-trigger::after {
+  content: "";
+  position: absolute;
+  right: 24px;
+  bottom: 0;
+  left: 62px;
+  height: 2px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 280ms cubic-bezier(.22, .61, .36, 1);
+}
+
+.servico-trigger:hover,
+.servico-trigger:focus-visible {
+  color: var(--gold);
+}
+
+.servico-trigger:hover::after,
+.servico-trigger:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.servico-numero {
+  color: var(--gold);
+  font-size: 10px;
+  letter-spacing: .14em;
+}
+
+.servico-nome {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.servico-preco {
+  min-width: 92px;
+  color: var(--muted-claro);
+  font-size: 13px;
+  text-align: right;
+}
+
+.servico-seta {
+  color: var(--gold);
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1;
+  transition: transform 180ms ease;
+}
+
+.servico-trigger:hover .servico-seta,
+.servico-trigger:focus-visible .servico-seta {
+  transform: translateX(4px);
+}
+
+.servico-trigger[aria-expanded="true"] .servico-seta {
+  transform: rotate(45deg);
+}
+
+.servico-trigger[aria-expanded="true"]:hover .servico-seta,
+.servico-trigger[aria-expanded="true"]:focus-visible .servico-seta {
+  transform: rotate(45deg) translateX(3px);
+}
+
+.servico-detalhe {
+  max-width: 570px;
+  padding: 0 44px 22px 62px;
+  color: var(--muted-claro);
+  font-size: 13.5px;
+  line-height: 1.65;
+}
+
+.servico-detalhe p {
+  margin: 0;
+}
+
+.servico-detalhe[hidden] {
+  display: none;
+}
+
+.servico-detalhe:not([hidden]) {
+  animation: detalhe-servico 220ms ease both;
+}
+
+@keyframes detalhe-servico {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* O nome mantém o peso editorial do título mesmo sendo um botão. */
+.servico-nome {
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+/* ===== Três motivos =====
+   Sem card e sem número: só o filete dourado marcando o começo. */
+.motivos {
+  background: var(--cream);
+  padding: 112px 0 118px;
+}
+
+.motivos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 64px;
+}
+
+.motivo-icon {
+  display: block;
+  width: 32px;
+  height: 32px;
+  margin-bottom: 26px;
+  fill: none;
+  stroke: var(--gold);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+.motivo h3 {
+  font-size: 25px;
+  line-height: 1.24;
+  margin-bottom: 14px;
+}
+.motivo p {
+  font-size: 14.5px;
+  line-height: 1.72;
+  color: var(--muted-claro);
+}
+
+/* ===== Onde fica ===== */
+.onde {
+  position: relative;
+  overflow: hidden;
+  background: var(--ink);
+  padding: 112px 0;
+  color: var(--cream);
+}
+
+/* Spotlight discreto: ilumina apenas superfícies escuras sem competir com o
+   conteúdo principal. A posição é atualizada pelo ponteiro em JavaScript. */
+.agenda-booking::before,
+.onde::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--spotlight-opacity, 0);
+  background: radial-gradient(
+    circle 190px at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
+    rgba(201, 169, 97, .16),
+    rgba(201, 169, 97, .05) 42%,
+    transparent 72%
+  );
+  transition: opacity 260ms ease;
+}
+
+.agenda-booking {
+  position: relative;
+  overflow: hidden;
+}
+
+.agenda-booking > *,
+.onde-grid {
+  position: relative;
+  z-index: 1;
+}
+
+
+
+.onde-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 72px;
+  align-items: center;
+}
+
+.onde h2 {
+  font-size: 46px;
+  line-height: 1.12;
+  color: var(--cream);
+  margin-bottom: 36px;
+}
+
+.onde-dados { margin: 0; }
+.onde-dados dt {
+  font-size: 10.5px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .26em;
+  /* .42 dava 3,8:1 contra --ink e reprovava; .52 sobe para 4,8:1. */
+  color: rgba(247, 242, 232, .52);
+  margin-bottom: 8px;
+}
+.onde-dados dd {
+  margin: 0 0 26px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(247, 242, 232, .86);
+}
+.onde-phone {
+  color: inherit;
+  text-decoration: none;
+}
+.onde-phone:hover { color: var(--gold); }
+.onde-dados dd:last-of-type { margin-bottom: 0; }
+
+.onde-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 38px;
+}
+
+.onde-mapa {
+  border: 1px solid var(--line-dark);
+}
+.onde-mapa iframe {
+  display: block;
+  width: 100%;
+  height: 430px;
+  border: 0;
+  /* Antes do src entrar o iframe é um retângulo branco; o fundo escuro
+     segura o lugar sem piscar contra a seção. */
+  background: var(--ink-2);
+  /* Aqui havia um filter: grayscale() para dessaturar o mapa. Saiu de
+     propósito: num iframe o filter força uma camada composta e apareceu
+     como custo de renderização nas medições. Era decoração, não estava
+     no projeto, e o mapa colorido não atrapalha — então não voltou. */
+}
+
+/* ===== Rodapé ===== */
+.site-footer {
+  background: var(--ink-2);
+  padding: 26px 0;
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.footer-ig {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+  color: var(--cream);
+  text-decoration: none;
+}
+.footer-arrow { color: var(--gold); }
+
+.footer-copy {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* =========================================================
+   Responsivo
+   ========================================================= */
+
+@media (max-width: 1080px) {
+  .hero h1 { font-size: 52px; }
+  .agenda h2 { font-size: 44px; }
+  .onde h2 { font-size: 40px; }
+  .agenda-inner { gap: 48px; }
+}
+
+@media (max-width: 900px) {
+  .shell { padding: 0 28px; }
+
+  /* Motivos e "onde fica" viram uma coluna só. */
+  .motivos-grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+  .onde-grid {
+    grid-template-columns: 1fr;
+    gap: 44px;
+    align-items: start;
+  }
+  .servicos { padding: 88px 0 92px; }
+  .servicos-inner {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+  .onde-mapa iframe { height: 320px; }
+
+  .agenda { padding: 88px 0 92px; }
+  .agenda-inner { grid-template-columns: 1fr; gap: 44px; }
+  .agenda-intro { max-width: 600px; }
+  .motivos { padding: 88px 0 92px; }
+  .onde { padding: 88px 0; }
+}
+
+@media (max-width: 700px) {
+  .shell { padding: 0 22px; }
+
+  .hero { height: 560px; }
+  .hero-inner { padding-bottom: 48px; }
+  .hero h1 { font-size: 40px; margin-bottom: 20px; }
+  .hero-lead { font-size: 14.5px; margin-bottom: 28px; }
+
+  /* No celular o botão principal ocupa a largura toda: é o alvo da página. */
+  .hero .btn-gold,
+  .agenda .btn-dark {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* O bloco do canto direito repete marca e cidade que já estão no header
+     e no rodapé; no celular ele só roubaria altura do hero. */
+  .hero-place { display: none; }
+
+  /* Sobra só o botão no header. */
+  .header-ig { display: none; }
+
+  /* Marca e botão em uma linha só não cabem em 375px com o rótulo
+     "BARBEARIA" ao lado. Entre perder esse rótulo e deixar o nome
+     quebrar em "Sir." / "Patrick", o rótulo sai. */
+  .brand-kicker { display: none; }
+  .header-inner { gap: 14px; }
+  .site-header .btn { padding: 13px 16px; font-size: 12px; }
+
+  .agenda { padding: 76px 0 80px; }
+  .agenda::before { top: 38px; font-size: 100px; }
+  .agenda h2 { font-size: 34px; }
+  .agenda-booking { padding: 22px; }
+  .servicos { padding: 76px 0 80px; }
+  .servicos-intro h2 { font-size: 34px; }
+  .servico { grid-template-columns: 30px 1fr auto; gap: 12px; }
+  .servico h3 { font-size: 20px; }
+  .agenda-punchline { font-size: 30px; }
+
+  .agenda h2 { font-size: 32px; }
+  .onde h2 { font-size: 32px; }
+  .motivo h3 { font-size: 22px; }
+
+  .agenda-booking .btn { display: flex; width: 100%; justify-content: center; }
+  .onde-acoes .btn { flex: 1 1 auto; justify-content: center; }
+
+  .footer-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
+/* Telas bem estreitas (abaixo de 360px, tipo iPhone SE antigo). Marca e
+   botão não cabem lado a lado com os tamanhos de cima: o rótulo
+   "BARBEARIA" sai, o nome e o botão encolhem, e a página volta a caber.
+   O corte fica em 359px de propósito, para 360 e 375 manterem o h1 de
+   40px pedido no projeto — só abaixo disso vale não rolar para os lados. */
+@media (max-width: 359px) {
+  .shell { padding: 0 16px; }
+
+  .brand { gap: 8px; }
+  .brand-name { font-size: 18px; }
+  .brand-kicker { display: none; }
+
+  .header-nav { gap: 12px; }
+  .site-header .btn { padding: 12px 14px; font-size: 11.5px; }
+
+  .hero h1 { font-size: 34px; }
+  .agenda h2 { font-size: 28px; }
+  .onde h2 { font-size: 28px; }
+
+  /* Os travessões dos campos ainda não preenchidos são largos e não
+     quebram sozinhos. */
+  .onde-dados dd { overflow-wrap: anywhere; }
+}
+
+/* =========================================================
+   Entrada por rolagem
+   O hero fica de fora de propósito: ele é a primeira dobra e precisa
+   nascer pronto, senão a animação atrasa o maior elemento da página.
+   ========================================================= */
+
+/* Estado de partida. Quem chega sem JavaScript nunca veria o conteúdo,
+   então o <noscript> no <head> desliga estas duas linhas. */
+.reveal-group > *,
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.reveal-group.is-visible > *,
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+  /* A curva desacelera no fim: o texto "assenta" em vez de parar seco. */
+  transition:
+    opacity 560ms ease,
+    transform 560ms cubic-bezier(.22, .61, .36, 1);
+}
+
+/* ----- Títulos letra por letra -----
+   Quem tem a classe .letras não entra no fade do bloco: o título aparece
+   pela animação das próprias letras, senão os dois efeitos se somam e o
+   texto pisca duas vezes. */
+.reveal-group > .letras {
+  opacity: 1;
+  transform: none;
+}
+
+/* A palavra inteira é inline-block para a linha nunca quebrar no meio
+   dela — sem isso o navegador pode quebrar entre duas letras. Os espaços
+   continuam nós de texto normais, então a quebra entre palavras funciona. */
+.palavra { display: inline-block; }
+
+.letra {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(.38em);
+}
+
+/* O atraso de cada letra vem inline, calculado pelo script. */
+.reveal-group.is-visible .letra,
+.reveal.is-visible .letra {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 420ms ease,
+    transform 420ms cubic-bezier(.22, .61, .36, 1);
+}
+
+/* Escadinha entre os filhos do mesmo bloco, para o olho ler na ordem em
+   vez de tudo aparecer junto. */
+.reveal-group.is-visible > *:nth-child(2) { transition-delay: 70ms; }
+.reveal-group.is-visible > *:nth-child(3) { transition-delay: 140ms; }
+.reveal-group.is-visible > *:nth-child(4) { transition-delay: 210ms; }
+.reveal-group.is-visible > *:nth-child(5) { transition-delay: 280ms; }
+.reveal-group.is-visible > *:nth-child(6) { transition-delay: 350ms; }
+
+/* Quem pediu menos movimento não recebe transição nenhuma — e o conteúdo
+   aparece direto, sem depender do observer. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal-group > *,
+  .reveal,
+  .letra {
+    opacity: 1;
+    transform: none;
+  }
+}

@@ -1,0 +1,11 @@
+# O repositório guarda tudo com fim de linha LF, mesmo escrito no Windows: o
+# Render publica em Linux, e arquivo com CRLF vira diff inteiro toda vez que
+# alguém edita em outro sistema.
+* text=auto eol=lf
+
+# Binário não passa por conversão nenhuma.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ico binary
